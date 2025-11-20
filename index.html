@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Link ke Base64 Converter</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🔗 Link ke Base64 Converter</h1>
+        <p>Masukkan URL atau teks yang ingin Anda ubah ke format Base64.</p>
+
+        <div class="input-group">
+            <label for="urlInput">Masukkan Teks/URL:</label>
+            <textarea id="urlInput" rows="4" placeholder="Contoh: https://www.google.com"></textarea>
+            <button id="convertButton">Konversi ke Base64</button>
+        </div>
+
+        <div class="output-group">
+            <label for="base64Output">Hasil Base64:</label>
+            <textarea id="base64Output" rows="8" readonly placeholder="Hasil Base64 akan muncul di sini..."></textarea>
+            <button id="copyButton">Salin Hasil</button>
+        </div>
+
+        <div id="message" class="message"></div>
+    </div>
+
+    <footer>
+        Dibuat untuk GitHub Pages.
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
