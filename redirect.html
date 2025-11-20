@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mengalihkan Tautan...</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f7f6;
+            color: #333;
+            text-align: center;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 90%;
+        }
+        h1 {
+            color: #0366d6;
+        }
+        .loading {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #0366d6;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .decoded-link {
+            word-wrap: break-word;
+            font-family: monospace;
+            background-color: #eee;
+            padding: 8px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⏳ Mohon Tunggu Sebentar...</h1>
+        <div class="loading"></div>
+        <p>Anda akan segera dialihkan ke:</p>
+        <p class="decoded-link" id="targetLink">Sedang memproses...</p>
+        <p id="message"></p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const encodedUrl = params.get('url');
+            const targetLinkDisplay = document.getElementById('targetLink');
+            const messageDisplay = document.getElementById('message');
+
+            if (!encodedUrl) {
+                // 1. Jika parameter 'url' tidak ada
+                messageDisplay.innerHTML = '❌ Kesalahan: Parameter URL (Base64) tidak ditemukan.';
+                targetLinkDisplay.textContent = 'N/A';
+                return;
+            }
+
+            try {
+                // Fungsi untuk decode Base64
+                // Menggunakan decodeURIComponent untuk menangani karakter khusus
+                const decodedUrl = decodeURIComponent(atob(encodedUrl).split('').map(function(c) {
+                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                }).join(''));
+
+                targetLinkDisplay.textContent = decodedUrl;
+                messageDisplay.innerHTML = '✅ Tautan berhasil didecode. Mengalihkan dalam 2 detik...';
+
+                // 2. Melakukan pengalihan setelah 2 detik
+                setTimeout(() => {
+                    window.location.replace(decodedUrl);
+                }, 2000); // Tunggu 2 detik (2000 milidetik)
+
+            } catch (e) {
+                // 3. Jika Base64 tidak valid
+                messageDisplay.innerHTML = `❌ Kesalahan: Kode Base64 tidak valid. <br> Error: ${e.message}`;
+                targetLinkDisplay.textContent = encodedUrl;
+            }
+        });
+    </script>
+</body>
+</html>
