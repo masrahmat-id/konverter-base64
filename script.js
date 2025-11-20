@@ -5,7 +5,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const copyButton = document.getElementById('copyButton');
     const message = document.getElementById('message');
 
-    // --- Fungsi Konversi ---
+    // **GANTI URL INI** dengan URL dasar proyek Anda
+    // Pastikan URL mengarah ke folder/root tempat 'redirect.html' berada.
+    const BASE_REDIRECT_URL = "https://masrahmat-id.github.io/konverter-base64/redirect.html?url=";
+
+    // --- Fungsi untuk Encode URL ke Base64 ---
+    function encodeToBase64(text) {
+        // Menggunakan encodeURIComponent untuk menangani karakter khusus dan btoa() untuk Base64
+        return btoa(unescape(encodeURIComponent(text)));
+    }
+
+    // --- Fungsi Konversi dan Generasi Link ---
     convertButton.addEventListener('click', () => {
         const url = urlInput.value.trim();
         base64Output.value = ''; // Bersihkan output sebelumnya
@@ -18,12 +28,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            // Menggunakan btoa() untuk mengkodekan string ke Base64.
-            // encodeURIComponent memastikan karakter non-ASCII (seperti é, ü) ditangani dengan benar.
-            const base64String = btoa(unescape(encodeURIComponent(url)));
-            base64Output.value = base64String;
-            message.textContent = '✅ Konversi berhasil!';
+            // 1. Encode teks/link yang dimasukkan ke Base64
+            const base64String = encodeToBase64(url);
+
+            // 2. Gabungkan Base64 dengan URL redirect dasar
+            const finalRedirectLink = BASE_REDIRECT_URL + base64String;
+            
+            // 3. Tampilkan hasil di kotak output
+            base64Output.value = finalRedirectLink;
+            message.textContent = '✅ Konversi berhasil! Salin link pengalihan di bawah.';
             message.className = 'message success';
+
         } catch (error) {
             message.textContent = '❌ Gagal melakukan konversi. Mungkin ada karakter yang tidak didukung.';
             message.className = 'message error';
@@ -35,9 +50,26 @@ document.addEventListener('DOMContentLoaded', () => {
     copyButton.addEventListener('click', () => {
         if (base64Output.value) {
             base64Output.select();
-            document.execCommand('copy');
-            message.textContent = '📋 Hasil Base64 berhasil disalin!';
-            message.className = 'message success';
+            // Untuk memastikan operasi copy bekerja dengan baik
+            try {
+                navigator.clipboard.writeText(base64Output.value)
+                    .then(() => {
+                        message.textContent = '📋 Link pengalihan berhasil disalin!';
+                        message.className = 'message success';
+                    })
+                    .catch(() => {
+                        // Fallback untuk browser lama
+                        document.execCommand('copy');
+                        message.textContent = '📋 Link pengalihan berhasil disalin! (Fallback)';
+                        message.className = 'message success';
+                    });
+            } catch (e) {
+                // Fallback untuk browser lama jika navigator.clipboard tidak tersedia
+                document.execCommand('copy');
+                message.textContent = '📋 Link pengalihan berhasil disalin! (Fallback)';
+                message.className = 'message success';
+            }
+            
         } else {
             message.textContent = '⚠️ Tidak ada hasil untuk disalin.';
             message.className = 'message warning';
