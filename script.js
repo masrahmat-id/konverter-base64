@@ -5,17 +5,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const copyButton = document.getElementById('copyButton');
     const message = document.getElementById('message');
 
-    // ** GANTI VARIABEL INI DENGAN URL REPOSITORY ANDA YANG SEBENARNYA **
-    // Pastikan path ke redirect.html sudah benar.
+    // 👇 PENTING: GANTI VARIABEL INI dengan URL Repositori dan Path yang Benar
     const REDIRECT_PREFIX = 'https://masrahmat-id.github.io/konverter-base64/redirect.html?url=';
-    // ***************************************************************
+    // *************************************************************************
 
     // --- Fungsi Konversi ---
     convertButton.addEventListener('click', () => {
         const url = urlInput.value.trim();
         base64Output.value = ''; 
         message.textContent = ''; 
-        base64Output.placeholder = 'Hasil Base64 akan muncul di sini...';
 
         if (!url) {
             message.textContent = '⚠️ Harap masukkan URL atau teks.';
@@ -24,19 +22,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            // 1. Lakukan Konversi ke Base64 (sama seperti sebelumnya)
+            // 1. Konversi Teks/URL menjadi Base64
             const base64String = btoa(unescape(encodeURIComponent(url)));
             
-            // 2. GABUNGKAN PREFIX DENGAN HASIL BASE64
+            // 2. GABUNGKAN (Concatenate) Base64 dengan Prefix URL Redirect
+            // Contoh: https://.../redirect.html?url= + aHR0cHM6Ly93d3cuZ29vZ2xlLmNvbQ==
             const finalRedirectLink = REDIRECT_PREFIX + base64String;
 
             // 3. Tampilkan Link Lengkap di Kolom Output
             base64Output.value = finalRedirectLink;
-            base64Output.placeholder = 'Link redirect Anda siap!';
-            message.textContent = '✅ Konversi berhasil! Salin tautan redirect di bawah.';
+            message.textContent = '✅ Konversi berhasil! Tautan redirect siap digunakan.';
             message.className = 'message success';
         } catch (error) {
-            message.textContent = '❌ Gagal melakukan konversi. Mungkin ada karakter yang tidak didukung.';
+            message.textContent = '❌ Gagal melakukan konversi. Pastikan input valid.';
             message.className = 'message error';
             console.error('Base64 Conversion Error:', error);
         }
